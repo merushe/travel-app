@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meeting Package Request</title>
+    <script src="api.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <style>
+        body { background: linear-gradient(135deg, #f5f7fa 0%, #e4efe9 100%); font-family: 'Segoe UI', sans-serif; padding: 20px; }
+        .container { max-width: 1000px; margin: 0 auto; }
+        .navbar { background: white; border-radius: 15px; padding: 15px 25px; margin-bottom: 25px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; }
+        .nav-brand { font-size: 24px; font-weight: bold; color: #2c3e50; }
+        .nav-links { display: flex; gap: 10px; flex-wrap: wrap; }
+        .nav-link { padding: 10px 20px; border-radius: 8px; text-decoration: none; color: #2c3e50; font-weight: 600; background: #f8f9fa; }
+        .nav-link:hover { background: #e8f4fd; color: #2980b9; }
+        .nav-link.active { background: #9b59b6; color: white; }
+        .user-info { display: flex; align-items: center; gap: 15px; }
+        #userNameDisplay { font-size: 14px; color: #2c3e50; background: #f8f9fa; padding: 6px 12px; border-radius: 20px; }
+        .btn-logout { background: #e74c3c; color: white; border: none; padding: 6px 15px; border-radius: 20px; font-size: 13px; cursor: pointer; transition: all 0.3s; }
+        .btn-logout:hover { background: #c0392b; transform: translateY(-2px); }
+        h1 { color: #2c3e50; border-bottom: 2px solid #9b59b6; padding-bottom: 10px; }
+        .card { background: white; border-radius: 12px; padding: 25px; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .form-group { margin-bottom: 20px; }
+        label { font-weight: 600; color: #2c3e50; margin-bottom: 8px; display: block; }
+        .required::after { content: " *"; color: #e74c3c; }
+        input, select, textarea { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; }
+        .currency-input { position: relative; }
+        .currency-input::before { content: "Rp"; position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #27ae60; font-weight: bold; }
+        .currency-input input { padding-left: 40px; }
+        .form-row { display: flex; gap: 15px; flex-wrap: wrap; }
+        .form-row .form-group { flex: 1; }
+        .btn { padding: 12px 25px; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.3s; }
+        .btn-primary { background: #9b59b6; color: white; }
+        .btn-primary:hover { background: #8e44ad; transform: translateY(-2px); }
+        .btn-secondary { background: #95a5a6; color: white; }
+        .btn-info { background: #17a2b8; color: white; }
+        .btn-info:hover { background: #138496; }
+        .summary-box { background: #f8f9fa; border-radius: 10px; padding: 20px; border-left: 4px solid #9b59b6; margin: 20px 0; }
+        .warning-box { background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; border-radius: 8px; margin-bottom: 20px; display: none; }
+        .existing-package { background: #e8f4fd; border-radius: 8px; padding: 15px; margin-top: 20px; font-size: 14px; }
+        .travel-list { background: #f8f9fa; border-radius: 8px; padding: 10px; margin-top: 10px; max-height: 200px; overflow-y: auto; }
+        .travel-item { padding: 8px; border-bottom: 1px solid #ddd; cursor: pointer; transition: background 0.2s; }
+        .travel-item:hover { background: #e8f4fd; }
+        .travel-item.selected { background: #9b59b6; color: white; }
+        .notification { position: fixed; top: 20px; right: 20px; background: white; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); padding: 15px 20px; z-index: 1000; transform: translateX(400px); transition: transform 0.3s ease; border-left: 4px solid #2ecc71; }
+        .notification.show { transform: translateX(0); }
+        .loading-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; z-index: 2000; }
+        .loading-spinner { width: 50px; height: 50px; border: 4px solid #f3f3f3; border-top: 4px solid #9b59b6; border-radius: 50%; animation: spin 1s linear infinite; background: white; padding: 10px; border-radius: 50%; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @media (max-width: 768px) { .form-row { flex-direction: column; } .navbar { flex-direction: column; text-align: center; } }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="navbar">
+        <div class="nav-brand">✈️ Travel & Budget System</div>
+        <div class="nav-links">
+            <a href="dashboard.html" class="nav-link">Dashboard</a>
+            <a href="travelform.html" class="nav-link">Travel Request</a>
+            <a href="budgetform.html" class="nav-link">Budget Form</a>
+            <a href="meeting-package.html" class="nav-link active">📋 Meeting Package</a>
+            <a href="https://expense-d1.pages.dev/Form.html" class="nav-link" target="_blank">💰 Expense</a>
+        </div>
+        <div class="user-info">
+            <span id="userNameDisplay"></span>
+            <button class="btn-logout" onclick="logout()">🚪 Logout</button>
+        </div>
+    </div>
+
+    <h1><i class="bi bi-calendar-event"></i> Meeting Package Request</h1>
+    <p class="text-muted">Form khusus untuk kebutuhan meeting tim (dapat di-share multiple traveler)</p>
+
+    <div id="warningBox" class="warning-box">
+        <i class="bi bi-exclamation-triangle"></i>
+        <strong>Perhatian!</strong> Sudah ada meeting package untuk project ini pada periode yang sama.
+    </div>
+
+    <div class="card">
+        <h4>Informasi Meeting</h4>
+        
+        <div class="form-row">
+            <div class="form-group">
+                <label class="required">Project Name</label>
+                <input type="text" id="projectName" placeholder="Nama project">
+            </div>
+            <div class="form-group">
+                <label class="required">Department</label>
+                <select id="department">
+                    <option value="">Pilih Department</option>
+                    <option value="service-delivery">Service Delivery</option>
+                    <option value="product-development">Product Development</option>
+                    <option value="business-administration">Business Administration</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label class="required">Start Date</label>
+                <input type="date" id="startDate">
+            </div>
+            <div class="form-group">
+                <label class="required">End Date</label>
+                <input type="date" id="endDate">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Location / Venue</label>
+            <input type="text" id="location" placeholder="Tempat meeting">
+        </div>
+
+        <!-- HUBUNGKAN KE TRAVEL REQUEST -->
+        <div class="form-group">
+            <label>🔗 Hubungkan ke Travel Request (Opsional)</label>
+            <div class="form-row">
+                <div class="form-group" style="flex: 3;">
+                    <input type="text" id="relatedFormId" placeholder="Cari berdasarkan Project Name atau Travel ID">
+                </div>
+                <div class="form-group" style="flex: 1;">
+                    <button type="button" class="btn btn-info" onclick="searchTravelRequests()" style="width: 100%;">🔍 Cari</button>
+                </div>
+            </div>
+            <div id="travelListContainer" class="travel-list" style="display: none;"></div>
+            <div class="info-text">Isi jika meeting package ini terkait dengan travel request tertentu. Nanti akan muncul di budget form.</div>
+        </div>
+
+        <h4 class="mt-4">Detail Peserta & Biaya</h4>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label class="required">Number of Attendees</label>
+                <input type="number" id="attendees" min="1" value="1" oninput="calculateTotal()">
+            </div>
+            <div class="form-group">
+                <label class="required">Event Days</label>
+                <input type="number" id="eventDays" min="1" value="1" oninput="calculateTotal()">
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label class="required">Cost per Attendee per Day</label>
+                <div class="currency-input">
+                    <input type="text" id="costPerAttendee" placeholder="0" oninput="formatCurrency(this); calculateTotal()">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Additional Costs (catering, venue, etc.)</label>
+                <div class="currency-input">
+                    <input type="text" id="additionalCost" placeholder="0" oninput="formatCurrency(this); calculateTotal()">
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Notes / Description</label>
+            <textarea id="notes" rows="3" placeholder="Jenis meeting, agenda, dll..."></textarea>
+        </div>
+
+        <div class="summary-box">
+            <h5>Budget Summary</h5>
+            <div class="form-row">
+                <div class="form-group"><strong>Total Meeting Package:</strong></div>
+                <div class="form-group"><span id="totalDisplay" style="font-size: 24px; font-weight: bold; color: #9b59b6;">Rp 0</span></div>
+            </div>
+            <div class="form-row">
+                <div class="form-group"><small>Per Attendee Total:</small></div>
+                <div class="form-group"><span id="perAttendeeDisplay">Rp 0</span></div>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <button class="btn btn-secondary" onclick="resetForm()">Reset</button>
+            <button class="btn btn-primary" onclick="saveMeetingPackage()">Submit Meeting Package</button>
+        </div>
+    </div>
+
+    <div id="existingPackages" class="existing-package" style="display: none;">
+        <strong><i class="bi bi-clock-history"></i> Meeting Package Existing untuk Project Ini:</strong>
+        <div id="existingList"></div>
+    </div>
+</div>
+
+<div id="notificationContainer"></div>
+<div id="loadingOverlay" class="loading-overlay"><div class="loading-spinner"></div></div>
+
+<script>
+    // ========================================================
+    // AUTH CHECK - Pakai sessionStorage (sama dengan halaman lain)
+    // ========================================================
+    function checkAuth() {
+        const user = sessionStorage.getItem('user');
+        
+        if (!user) {
+            sessionStorage.setItem('redirectAfterLogin', window.location.pathname);
+            window.location.href = 'login.html';
+            return false;
+        }
+        return true;
+    }
+    
+    if (!checkAuth()) {
+        throw new Error('Not authenticated');
+    }
+    
+    const currentUser = JSON.parse(sessionStorage.getItem('user') || '{}');
+    document.getElementById('userNameDisplay').innerHTML = `👤 ${currentUser.name || currentUser.email || 'User'}`;
+    
+    function logout() {
+        sessionStorage.removeItem('user');
+        window.location.href = 'login.html';
+    }
+    
+    let existingPackages = [];
+    let travelRequests = [];
+
+    function formatCurrency(input) {
+        let value = input.value.replace(/[^\d]/g, '');
+        if (value) input.value = parseInt(value).toLocaleString('id-ID');
+    }
+
+    function parseRupiah(value) {
+        if (!value) return 0;
+        return parseInt(value.toString().replace(/\./g, '')) || 0;
+    }
+
+    function formatRupiah(amount) {
+        if (!amount) return '0';
+        return amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    }
+
+    function calculateTotal() {
+        const attendees = parseInt(document.getElementById('attendees').value) || 0;
+        const days = parseInt(document.getElementById('eventDays').value) || 0;
+        const costPerAttendee = parseRupiah(document.getElementById('costPerAttendee').value);
+        const additional = parseRupiah(document.getElementById('additionalCost').value);
+        
+        const total = (attendees * days * costPerAttendee) + additional;
+        
+        document.getElementById('totalDisplay').innerHTML = 'Rp ' + formatRupiah(total);
+        document.getElementById('perAttendeeDisplay').innerHTML = 'Rp ' + formatRupiah(Math.round(total / (attendees || 1)));
+        
+        return total;
+    }
+
+    async function checkDuplicate() {
+        const projectName = document.getElementById('projectName').value.trim();
+        const startDate = document.getElementById('startDate').value;
+        const endDate = document.getElementById('endDate').value;
+        
+        if (!projectName || !startDate || !endDate) return false;
+        
+        try {
+            const response = await fetch('https://travel-system-worker.rmersiana.workers.dev/api/meeting-packages/check', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ projectName, startDate, endDate })
+            });
+            const result = await response.json();
+            
+            if (result.exists) {
+                document.getElementById('warningBox').style.display = 'block';
+                return true;
+            } else {
+                document.getElementById('warningBox').style.display = 'none';
+                return false;
+            }
+        } catch(e) {
+            console.error('Check duplicate error:', e);
+            return false;
+        }
+    }
+
+    async function loadExistingPackages() {
+        const projectName = document.getElementById('projectName').value.trim();
+        if (!projectName) return;
+        
+        try {
+            const response = await fetch(`https://travel-system-worker.rmersiana.workers.dev/api/meeting-packages?projectName=${encodeURIComponent(projectName)}`);
+            const result = await response.json();
+            
+            if (result.success && result.records && result.records.length > 0) {
+                existingPackages = result.records;
+                const container = document.getElementById('existingPackages');
+                const listContainer = document.getElementById('existingList');
+                
+                listContainer.innerHTML = existingPackages.map(pkg => `
+                    <div style="border-bottom: 1px solid #ddd; padding: 10px 0;">
+                        <strong>${pkg.startDate} s/d ${pkg.endDate}</strong><br>
+                        Peserta: ${pkg.attendees} orang, ${pkg.eventDays} hari<br>
+                        Total: Rp ${formatRupiah(pkg.totalCost)}<br>
+                        <small>Dibuat oleh: ${pkg.createdBy || pkg.employeeName || 'N/A'}</small>
+                        ${pkg.relatedFormId ? `<br><small>🔗 Terhubung ke: ${pkg.relatedFormId}</small>` : ''}
+                    </div>
+                `).join('');
+                container.style.display = 'block';
+            } else {
+                document.getElementById('existingPackages').style.display = 'none';
+            }
+        } catch(e) {
+            console.error('Load existing error:', e);
+        }
+    }
+
+    // ========================================================
+    // FUNGSI PENCARIAN TRAVEL REQUEST
+    // ========================================================
+    
+    async function searchTravelRequests() {
+        const keyword = document.getElementById('relatedFormId').value.trim().toLowerCase();
+        if (!keyword) {
+            showNotification('warning', 'Peringatan', 'Masukkan kata kunci pencarian (Project Name atau Travel ID)');
+            return;
+        }
+        
+        showLoading();
+        try {
+            const response = await fetch('https://travel-system-worker.rmersiana.workers.dev/api/travel-forms');
+            const result = await response.json();
+            
+            if (result.success && result.records) {
+                // Filter berdasarkan keyword
+                travelRequests = result.records.filter(travel => {
+                    const projectMatch = travel.projectName?.toLowerCase().includes(keyword);
+                    const idMatch = travel.formId?.toLowerCase().includes(keyword);
+                    return projectMatch || idMatch;
+                });
+                
+                const container = document.getElementById('travelListContainer');
+                
+                if (travelRequests.length === 0) {
+                    container.innerHTML = '<div class="travel-item">Tidak ada travel request yang ditemukan</div>';
+                    container.style.display = 'block';
+                } else {
+                    container.innerHTML = travelRequests.map(travel => `
+                        <div class="travel-item" onclick="selectTravelRequest('${travel.formId}', '${escapeHtml(travel.projectName || 'No Project')}', '${escapeHtml(travel.destination || '-')}')">
+                            <strong>${travel.formId}</strong> - ${escapeHtml(travel.projectName || 'No Project')}<br>
+                            <small>📍 ${escapeHtml(travel.destination || '-')} | 👤 ${escapeHtml(travel.employeeName || '-')}</small>
+                        </div>
+                    `).join('');
+                    container.style.display = 'block';
+                }
+            }
+        } catch(e) {
+            console.error('Search error:', e);
+            showNotification('error', 'Error', 'Gagal mencari travel request');
+        }
+        hideLoading();
+    }
+    
+    function selectTravelRequest(formId, projectName, destination) {
+        document.getElementById('relatedFormId').value = formId;
+        document.getElementById('travelListContainer').style.display = 'none';
+        
+        // Auto-fill project name jika kosong
+        if (!document.getElementById('projectName').value.trim()) {
+            document.getElementById('projectName').value = projectName;
+            loadExistingPackages();
+            checkDuplicate();
+        }
+        
+        showNotification('success', 'Terhubung', `Meeting package akan terhubung ke travel request: ${formId}`);
+    }
+    
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+
+    async function saveMeetingPackage() {
+        const projectName = document.getElementById('projectName').value.trim();
+        const department = document.getElementById('department').value;
+        const startDate = document.getElementById('startDate').value;
+        const endDate = document.getElementById('endDate').value;
+        const location = document.getElementById('location').value;
+        const attendees = parseInt(document.getElementById('attendees').value) || 0;
+        const eventDays = parseInt(document.getElementById('eventDays').value) || 0;
+        const costPerAttendee = parseRupiah(document.getElementById('costPerAttendee').value);
+        const additionalCost = parseRupiah(document.getElementById('additionalCost').value);
+        const notes = document.getElementById('notes').value;
+        const relatedFormId = document.getElementById('relatedFormId').value.trim();
+
+        if (!projectName) { showNotification('error', 'Error', 'Project name required'); return; }
+        if (!department) { showNotification('error', 'Error', 'Department required'); return; }
+        if (!startDate) { showNotification('error', 'Error', 'Start date required'); return; }
+        if (!endDate) { showNotification('error', 'Error', 'End date required'); return; }
+        if (attendees < 1) { showNotification('error', 'Error', 'Minimum 1 attendee'); return; }
+        if (eventDays < 1) { showNotification('error', 'Error', 'Minimum 1 event day'); return; }
+        
+        const totalCost = calculateTotal();
+        
+        const duplicateExists = await checkDuplicate();
+        if (duplicateExists) {
+            showNotification('error', 'Duplicate Meeting Package', 
+                'Meeting package untuk project ini pada periode yang sama sudah ada. Tidak dapat membuat duplikat.');
+            return;
+        }
+
+        showLoading();
+
+        const data = {
+            projectName,
+            projectId: projectName,
+            department,
+            startDate,
+            endDate,
+            location,
+            attendees,
+            eventDays,
+            costPerAttendee,
+            additionalCost,
+            totalCost,
+            notes,
+            relatedFormId: relatedFormId,
+            createdAt: new Date().toISOString(),
+            createdBy: currentUser?.name || currentUser?.email || 'Unknown'
+        };
+
+        try {
+            const response = await fetch('https://travel-system-worker.rmersiana.workers.dev/api/meeting-packages', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            const result = await response.json();
+            
+            if (result.success) {
+                showNotification('success', 'Success', 'Meeting package saved successfully');
+                resetForm();
+                loadExistingPackages();
+            } else {
+                throw new Error(result.error || 'Save failed');
+            }
+        } catch(e) {
+            showNotification('error', 'Error', e.message);
+        } finally {
+            hideLoading();
+        }
+    }
+
+    function resetForm() {
+        document.getElementById('projectName').value = '';
+        document.getElementById('department').value = '';
+        document.getElementById('startDate').value = '';
+        document.getElementById('endDate').value = '';
+        document.getElementById('location').value = '';
+        document.getElementById('attendees').value = '1';
+        document.getElementById('eventDays').value = '1';
+        document.getElementById('costPerAttendee').value = '';
+        document.getElementById('additionalCost').value = '';
+        document.getElementById('notes').value = '';
+        document.getElementById('relatedFormId').value = '';
+        document.getElementById('travelListContainer').style.display = 'none';
+        calculateTotal();
+        document.getElementById('warningBox').style.display = 'none';
+    }
+
+    function showLoading() {
+        document.getElementById('loadingOverlay').style.display = 'flex';
+    }
+
+    function hideLoading() {
+        document.getElementById('loadingOverlay').style.display = 'none';
+    }
+
+    function showNotification(type, title, message) {
+        const container = document.getElementById('notificationContainer');
+        const id = 'n' + Date.now();
+        const notification = document.createElement('div');
+        notification.className = 'notification';
+        notification.id = id;
+        notification.innerHTML = `
+            <div style="font-size:24px;">${type === 'success' ? '✅' : type === 'error' ? '❌' : '⚠️'}</div>
+            <div><strong>${title}</strong><div style="font-size:13px;">${message}</div></div>
+        `;
+        container.appendChild(notification);
+        setTimeout(() => notification.classList.add('show'), 10);
+        setTimeout(() => {
+            notification.classList.remove('show');
+            setTimeout(() => notification.remove(), 300);
+        }, 3000);
+    }
+
+    document.getElementById('projectName').addEventListener('blur', loadExistingPackages);
+    document.getElementById('startDate').addEventListener('change', checkDuplicate);
+    document.getElementById('endDate').addEventListener('change', checkDuplicate);
+    
+    document.addEventListener('DOMContentLoaded', () => {
+        calculateTotal();
+    });
+</script>
+</body>
+</html>

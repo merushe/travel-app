@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Travel & Budget System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <script src="api.js"></script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #2c3e50 0%, #1a2530 100%);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .login-card {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        .login-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .login-header i {
+            font-size: 48px;
+            color: #2c3e50;
+        }
+        .login-header h2 {
+            color: #2c3e50;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+        .login-header p {
+            color: #666;
+            font-size: 14px;
+        }
+        .form-control {
+            height: 45px;
+            border-radius: 8px;
+        }
+        .btn-login {
+            background: linear-gradient(135deg, #2c3e50 0%, #1a2530 100%);
+            border: none;
+            height: 45px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            width: 100%;
+            transition: all 0.3s;
+        }
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .alert {
+            display: none;
+            margin-top: 20px;
+        }
+        .demo-credential {
+            margin-top: 20px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            font-size: 12px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-card">
+        <div class="login-header">
+            <i class="bi bi-wallet2"></i>
+            <h2>Travel & Budget System</h2>
+            <p>Masukkan email dan password Anda</p>
+        </div>
+        
+        <form id="loginForm">
+            <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" class="form-control" id="email" required 
+                       placeholder="contoh@biaenergi.com">
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" class="form-control" id="password" required 
+                       placeholder="********">
+            </div>
+            <button type="submit" class="btn-login">
+                <i class="bi bi-box-arrow-in-right"></i> Login
+            </button>
+            <div class="alert alert-danger" id="errorAlert" role="alert"></div>
+        </form>
+        
+        <div class="demo-credential">
+            <i class="bi bi-info-circle"></i> 
+            <strong>Informasi Login:</strong><br>
+            Admin: <strong>admin@biaenergi.com</strong> / password123<br>
+            Employee: <strong>employee1@biaenergi.com</strong> / password123<br>
+            <small class="text-muted">* Password default: password123</small>
+        </div>
+    </div>
+
+    <script>
+        // Cek apakah sudah login
+        const user = sessionStorage.getItem('user');
+        if (user) {
+            // Redirect ke travel form (bukan dashboard)
+            window.location.href = '/travelform.html';
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const errorAlert = document.getElementById('errorAlert');
+            
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> Loading...';
+            submitBtn.disabled = true;
+            errorAlert.style.display = 'none';
+            
+            try {
+                const result = await apiService.login(email, password);
+                
+                if (result.success) {
+                    sessionStorage.setItem('user', JSON.stringify(result.user));
+                    // Redirect ke travel form
+                    window.location.href = '/travelform.html';
+                } else {
+                    errorAlert.textContent = result.message || 'Login gagal';
+                    errorAlert.style.display = 'block';
+                }
+            } catch (error) {
+                errorAlert.textContent = 'Terjadi kesalahan: ' + error.message;
+                errorAlert.style.display = 'block';
+            } finally {
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>

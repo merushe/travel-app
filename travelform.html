@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business Travel Request Form</title>
+    <script src="api.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    
+    <style>
+        body { background: linear-gradient(135deg, #f5f7fa 0%, #e4efe9 100%); font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 20px; }
+        .container { max-width: 1000px; margin: 0 auto; background: white; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); padding: 30px; }
+        .navbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 2px solid #e0e0e0; flex-wrap: wrap; gap: 15px; }
+        .nav-brand { font-size: 24px; font-weight: bold; color: #2c3e50; }
+        .nav-links { display: flex; gap: 10px; flex-wrap: wrap; }
+        .nav-link { padding: 10px 20px; border-radius: 8px; text-decoration: none; color: #2c3e50; font-weight: 600; background: #f8f9fa; transition: all 0.3s; }
+        .nav-link:hover { background: #e8f4fd; color: #2980b9; }
+        .nav-link.active { background: #3498db; color: white; }
+        .nav-link.expense { background: #9b59b6; color: white; }
+        .nav-link.expense:hover { background: #8e44ad; }
+        .user-info { display: flex; align-items: center; gap: 15px; }
+        #userNameDisplay { font-size: 14px; color: #2c3e50; background: #f8f9fa; padding: 6px 12px; border-radius: 20px; }
+        #userRoleDisplay { font-size: 12px; background: #e74c3c; color: white; padding: 4px 10px; border-radius: 20px; font-weight: bold; }
+        .btn-logout { background: #e74c3c; color: white; border: none; padding: 6px 15px; border-radius: 20px; font-size: 13px; cursor: pointer; transition: all 0.3s; }
+        .btn-logout:hover { background: #c0392b; transform: translateY(-2px); }
+        h1 { color: #2c3e50; margin-top: 0; border-bottom: 2px solid #2ecc71; padding-bottom: 15px; }
+        .form-id-section { background: #e8f4fd; padding: 20px; border-radius: 10px; border: 2px solid #3498db; margin: 20px 0; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; font-weight: 600; color: #2c3e50; }
+        .required::after { content: " *"; color: #e74c3c; }
+        input, select, textarea { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 5px; font-size: 16px; }
+        .form-row { display: flex; gap: 15px; flex-wrap: wrap; }
+        .form-row .form-group { flex: 1; min-width: 200px; }
+        .currency-input { position: relative; }
+        .currency-input::before { content: "Rp"; position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #27ae60; font-weight: bold; z-index: 1; }
+        .currency-input input { padding-left: 40px; }
+        .traveler-mode-toggle { display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
+        .traveler-mode-btn { flex: 1; padding: 10px; background: #f8f9fa; border: 2px solid #ddd; border-radius: 5px; cursor: pointer; text-align: center; font-weight: 600; }
+        .traveler-mode-btn.active { background: #e8f4fd; border-color: #3498db; color: #2980b9; }
+        #individualTravelSection, #groupTravelSection { background: #f8f9fa; border-radius: 8px; padding: 20px; margin: 15px 0; }
+        .traveler-row { display: flex; gap: 10px; align-items: center; margin-bottom: 10px; padding: 10px; background: white; border-radius: 5px; flex-wrap: wrap; }
+        .traveler-name { flex: 2; min-width: 150px; }
+        .traveler-date { flex: 1; min-width: 120px; }
+        .traveler-duration { flex: 0.5; text-align: center; font-weight: bold; color: #2980b9; min-width: 60px; }
+        .remove-traveler-btn { background: #e74c3c; color: white; border: none; border-radius: 4px; padding: 8px 12px; cursor: pointer; }
+        .add-traveler-btn { background: #2ecc71; color: white; border: none; border-radius: 4px; padding: 10px 15px; cursor: pointer; margin-top: 10px; }
+        .travel-duration { background-color: #e8f4fd; border-radius: 5px; padding: 10px 15px; margin-top: 10px; font-weight: bold; color: #2980b9; text-align: center; }
+        .certification-section { background: #fff8e1; border-radius: 8px; padding: 20px; margin: 20px 0; border-left: 4px solid #ffc107; display: none; }
+        .attachment-section { background: #f0f9ff; border-radius: 8px; padding: 20px; margin: 20px 0; border-left: 4px solid #3498db; }
+        .file-input-wrapper { position: relative; margin-bottom: 15px; }
+        .file-input-wrapper input[type="file"] { position: absolute; opacity: 0; width: 100%; height: 100%; cursor: pointer; }
+        .file-input-label { display: inline-block; background: #3498db; color: white; padding: 10px 20px; border-radius: 5px; cursor: pointer; transition: all 0.3s; }
+        .file-input-label:hover { background: #2980b9; }
+        .file-name { margin-left: 10px; font-size: 13px; color: #666; }
+        .budget-section { background: #f0f9ff; border-radius: 10px; padding: 20px; margin: 20px 0; border-left: 4px solid #3498db; }
+        .button-group { display: flex; gap: 10px; margin-top: 30px; flex-wrap: wrap; }
+        button { padding: 12px 25px; border: none; border-radius: 5px; font-size: 16px; font-weight: 600; cursor: pointer; flex: 1; transition: all 0.3s; }
+        .save-btn { background: #2ecc71; color: white; }
+        .save-btn:hover { background: #27ae60; transform: translateY(-2px); }
+        .reset-btn { background: #e74c3c; color: white; }
+        .reset-btn:hover { background: #c0392b; }
+        .budget-btn { background: #f39c12; color: white; }
+        .budget-btn:hover { background: #e67e22; }
+        .copy-btn { background: #9b59b6; color: white; }
+        .id-btn { background: #3498db; color: white; }
+        .delete-btn { background: #e74c3c; color: white; display: none; }
+        #formIdDisplay { font-size: 24px; font-weight: bold; padding: 15px; background: white; border: 2px dashed #3498db; border-radius: 5px; text-align: center; color: #2980b9; margin: 15px 0; }
+        .notification { position: fixed; top: 20px; right: 20px; background: white; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); padding: 15px 20px; max-width: 350px; z-index: 1000; display: flex; align-items: center; gap: 12px; transform: translateX(400px); transition: transform 0.3s ease; border-left: 4px solid #2ecc71; }
+        .notification.show { transform: translateX(0); }
+        .info-text { font-size: 12px; color: #7f8c8d; margin-top: 5px; }
+        .edit-mode-indicator { background: #f39c12; color: white; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; margin-left: 10px; display: none; }
+        .loading-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(255,255,255,0.95); display: none; justify-content: center; align-items: center; z-index: 2000; }
+        .loading-spinner { width: 50px; height: 50px; border: 4px solid #f3f3f3; border-top: 4px solid #3498db; border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @media (max-width: 768px) { .form-row, .traveler-row { flex-direction: column; } .button-group { flex-direction: column; } .traveler-mode-toggle { flex-direction: column; } .navbar { flex-direction: column; text-align: center; } .nav-links { justify-content: center; } .user-info { margin-top: 10px; } }
+    </style>
+</head>
+<body>
+<div class="loading-overlay" id="loadingOverlay"><div class="loading-spinner"></div></div>
+
+<div class="container">
+    <div class="navbar">
+        <div class="nav-brand">✈️ Travel & Budget System</div>
+        <div class="nav-links">
+            <a href="dashboard.html" class="nav-link">Dashboard</a>
+            <a href="travelform.html" class="nav-link active">Travel Request</a>
+            <a href="budgetform.html" class="nav-link">Budget Form</a>
+            <a href="meeting-package.html" class="nav-link">📋 Meeting Package</a>
+            <a href="https://expense-d1.pages.dev/Form.html" class="nav-link expense" target="_blank">💰 Expense</a>
+        </div>
+        <div class="user-info">
+            <span id="userNameDisplay"></span>
+            <span id="userRoleDisplay"></span>
+            <button class="btn-logout" onclick="logout()">🚪 Logout</button>
+        </div>
+    </div>
+    
+    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;">
+        <h1 style="margin: 0;">Business Travel Request Form</h1>
+        <span id="editModeIndicator" class="edit-mode-indicator">✏️ EDIT MODE</span>
+    </div>
+    
+    <div class="form-id-section">
+        <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 15px;">
+            <div style="flex: 2;"><label>Travel Request ID</label><div id="formIdDisplay">Fill form and click "Save"</div></div>
+            <div style="flex: 1; display: flex; gap: 5px; align-items: flex-end; flex-wrap: wrap;"><button class="copy-btn" onclick="copyFormId()">📋 Copy</button><button class="id-btn" onclick="generateNewId()">🔄 New ID</button></div>
+        </div>
+        <div style="background: #d4edda; padding: 10px; border-radius: 5px; font-size: 14px;">💡 This ID will be used for budget processing. Save it before going to Budget Form.</div>
+    </div>
+    
+    <form id="travelForm">
+        <!-- Employee Information - OTOMATIS DARI LOGIN -->
+        <div class="form-group">
+            <label class="required">Main Contact / Requestor</label>
+            <input type="text" id="employeeName" readonly style="background-color: #e9ecef; cursor: not-allowed;">
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label class="required">Department</label>
+                <select id="department" style="background-color: #e9ecef;">
+                    <option value="">Select Department</option>
+                    <option value="service-delivery">Service Delivery</option>
+                    <option value="product-development">Product Development</option>
+                    <option value="business-administration">Business Administration</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="required">Project Name</label>
+                <input type="text" id="projectName" placeholder="Enter project name">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label class="required">Travel Destination</label>
+                <input type="text" id="destination" placeholder="City, Country">
+            </div>
+            <div class="form-group">
+                <label class="required">Purpose of Travel</label>
+                <textarea id="purpose" rows="2" placeholder="Describe purpose..."></textarea>
+            </div>
+        </div>
+        
+        <!-- Traveler Configuration -->
+        <div class="form-group">
+            <label class="required">Traveler Configuration</label>
+            <div class="traveler-mode-toggle">
+                <div class="traveler-mode-btn active" onclick="setTravelerMode('individual')" id="individualModeBtn">👤 Individual Travel</div>
+                <div class="traveler-mode-btn" onclick="setTravelerMode('group')" id="groupModeBtn">👥 Group Travel</div>
+            </div>
+            
+            <!-- INDIVIDUAL TRAVEL: satu orang, satu tanggal -->
+            <div id="individualTravelSection">
+                <div class="form-row">
+                    <div class="form-group"><label class="required">Departure Date</label><input type="date" id="individualStartDate"></div>
+                    <div class="form-group"><label class="required">Return Date</label><input type="date" id="individualEndDate"></div>
+                </div>
+            </div>
+            
+            <!-- GROUP TRAVEL: multiple traveler, beda tanggal -->
+            <div id="groupTravelSection" style="display: none;">
+                <div id="travelerDatesContainer">
+                    <div class="traveler-row" data-index="0">
+                        <div class="traveler-name"><input type="text" class="traveler-name-input" placeholder="Traveler 1 Name"></div>
+                        <div class="traveler-date"><input type="date" class="traveler-departure-date" placeholder="Departure"></div>
+                        <div class="traveler-date"><input type="date" class="traveler-return-date" placeholder="Return"></div>
+                        <div class="traveler-duration" data-index="0">0 days</div>
+                        <button type="button" class="remove-traveler-btn" onclick="removeTraveler(this)" style="display: none;">✕</button>
+                    </div>
+                </div>
+                <button type="button" class="add-traveler-btn" onclick="addTraveler()">+ Add Another Traveler</button>
+            </div>
+            
+            <div class="travel-duration" id="durationDisplay">Travel Duration: 0 days</div>
+        </div>
+        
+        <!-- MCU & CERTIFICATION SECTION -->
+        <div class="form-group">
+            <label class="required">Does this travel require MCU or Certification?</label>
+            <select id="needCertification" onchange="toggleCertification(this.value)">
+                <option value="">Select option</option>
+                <option value="no">No</option>
+                <option value="yes">Yes</option>
+            </select>
+        </div>
+        
+        <div class="certification-section" id="certificationDetails">
+            <h3><i class="bi bi-shield-check"></i> MCU & Certification Requirements</h3>
+            <div class="form-group">
+                <label>MCU Requirements Details</label>
+                <textarea id="mcuRequirements" rows="2" placeholder="Specify MCU requirements..."></textarea>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Required Certification</label>
+                    <select id="certificationType">
+                        <option value="">Select certification type</option>
+                        <option value="bss">BSS Certification</option>
+                        <option value="h2s">H2S Certification</option>
+                        <option value="other">Other Certification</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Other Certification Details</label>
+                    <input type="text" id="otherCertification" placeholder="Specify other certification">
+                </div>
+            </div>
+            
+            <div class="attachment-section">
+                <h5><i class="bi bi-paperclip"></i> Attachment / Bukti Sertifikat</h5>
+                <div class="file-input-wrapper">
+                    <input type="file" id="certificateFile" accept=".pdf,.jpg,.jpeg,.png" onchange="updateFileName(this, 'certFileName')">
+                    <span class="file-input-label" onclick="document.getElementById('certificateFile').click()">
+                        <i class="bi bi-cloud-upload"></i> Upload Certificate
+                    </span>
+                    <span id="certFileName" class="file-name">No file chosen</span>
+                </div>
+                <div class="info-text">Upload hasil MCU atau sertifikat (PDF, JPG, PNG - max 5MB)</div>
+                <input type="hidden" id="certificateData" value="">
+            </div>
+        </div>
+
+        <!-- BUDGET ESTIMATION SECTION -->
+        <div class="budget-section">
+            <h3 style="color: #2c3e50; margin-top: 0;">💰 Budget Estimation</h3>
+            <div class="form-row">
+                <div class="form-group"><label>Daily Allowance (per day, per person)</label><div class="currency-input"><input type="text" id="travelAllowance" placeholder="Rp" oninput="formatCurrency(this)"></div></div>
+                <div class="form-group"><label>Laundry Allowance (per day, per person)</label><div class="currency-input"><input type="text" id="travelLaundry" placeholder="Rp" oninput="formatCurrency(this)"></div></div>
+            </div>
+            <div class="form-group"><label>Local Transportation (per person, lump sum)</label><div class="currency-input"><input type="text" id="travelLocalTransport" placeholder="Rp" oninput="formatCurrency(this)"></div></div>
+            <div class="form-group"><label>Other Expenses (lump sum, per person)</label><div class="currency-input"><input type="text" id="travelOtherExpenses" placeholder="Rp" oninput="formatCurrency(this)"></div></div>
+            <p class="info-text" style="color:#e67e22; background:#fff3e0; padding:8px; border-radius:5px;">⚠️ Airfare, Accommodation akan diisi di Budget Form</p>
+        </div>
+        
+        <!-- Additional Notes -->
+        <div class="form-group">
+            <label>Additional Notes</label>
+            <textarea id="additionalNotes" rows="2" placeholder="Any additional notes..."></textarea>
+        </div>
+        
+        <!-- Buttons -->
+        <div class="button-group">
+            <button type="button" class="reset-btn" onclick="resetForm()">Reset</button>
+            <button type="button" class="save-btn" onclick="saveForm()">Save Form</button>
+            <button type="button" class="budget-btn" onclick="goToBudget()">Go to Budget</button>
+            <button type="button" class="delete-btn" id="deleteBtn" onclick="deleteTravelForm()">Delete</button>
+        </div>
+    </form>
+</div>
+<div id="notificationContainer"></div>
+
+<script>
+    let currentFormId = '', travelerMode = 'individual', travelerCounter = 1, isEditMode = false;
+    let currentUser = null;
+    
+    function formatCurrency(i) { let v = i.value.replace(/[^\d]/g,''); if(v) i.value = parseInt(v).toLocaleString('id-ID'); }
+    function parseRupiah(v) { if(!v) return 0; return parseInt(v.toString().replace(/\./g,''))||0; }
+    function formatRupiah(a) { if(!a) return '0'; return a.toString().replace(/\B(?=(\d{3})+(?!\d))/g,"."); }
+    
+    function updateFileName(input, spanId) {
+        const span = document.getElementById(spanId);
+        if (input.files && input.files[0]) {
+            span.textContent = input.files[0].name;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('certificateData').value = e.target.result;
+            };
+            reader.readAsDataURL(input.files[0]);
+        } else {
+            span.textContent = 'No file chosen';
+            document.getElementById('certificateData').value = '';
+        }
+    }
+    
+    // ========== USER INFO DARI SESSION ==========
+    function getCurrentUser() {
+        const user = sessionStorage.getItem('user');
+        return user ? JSON.parse(user) : null;
+    }
+    
+    function updateUserDisplay() {
+        currentUser = getCurrentUser();
+        if (currentUser) {
+            // Isi otomatis employeeName dari user yang login
+            document.getElementById('employeeName').value = currentUser.name || currentUser.email;
+            document.getElementById('userNameDisplay').innerHTML = `👤 ${currentUser.name || currentUser.email}`;
+            
+            // Tampilkan role
+            if (currentUser.role === 'admin') {
+                document.getElementById('userRoleDisplay').innerHTML = '🔑 ADMIN';
+                document.getElementById('userRoleDisplay').style.background = '#e74c3c';
+            } else if (currentUser.role === 'manager') {
+                document.getElementById('userRoleDisplay').innerHTML = '⭐ MANAGER';
+                document.getElementById('userRoleDisplay').style.background = '#f39c12';
+            } else {
+                document.getElementById('userRoleDisplay').innerHTML = '👥 USER';
+                document.getElementById('userRoleDisplay').style.background = '#3498db';
+            }
+            
+            // Isi otomatis department dari user (jika ada di data user)
+            if (currentUser.division) {
+                const deptSelect = document.getElementById('department');
+                if (deptSelect.querySelector(`option[value="${currentUser.division}"]`)) {
+                    deptSelect.value = currentUser.division;
+                }
+            }
+        } else {
+            window.location.href = '/login.html';
+        }
+    }
+    
+    function logout() {
+        sessionStorage.removeItem('user');
+        window.location.href = '/login.html';
+    }
+    
+    document.addEventListener('DOMContentLoaded',()=>{
+        updateUserDisplay();
+        
+        // Set default dates
+        const today = new Date(), tomorrow = new Date(today);
+        tomorrow.setDate(tomorrow.getDate()+1);
+        document.getElementById('individualStartDate').value = today.toISOString().split('T')[0];
+        document.getElementById('individualEndDate').value = tomorrow.toISOString().split('T')[0];
+        
+        const url = new URLSearchParams(window.location.search), id = url.get('formId');
+        if(id) loadExistingForm(id);
+        
+        document.getElementById('individualStartDate').addEventListener('change', calculateDuration);
+        document.getElementById('individualEndDate').addEventListener('change', calculateDuration);
+        
+        // Event listener untuk group travel dates
+        document.getElementById('groupTravelSection').addEventListener('change', function() {
+            calculateDuration();
+        });
+    });
+    
+    function generateNewId() {
+        const proj = document.getElementById('projectName').value;
+        if(!proj){ showNotification('warning','Project Name Required','Please enter project name first'); return; }
+        const date = new Date(), ds = date.getFullYear().toString().slice(-2)+(date.getMonth()+1).toString().padStart(2,'0')+date.getDate().toString().padStart(2,'0');
+        let abbr = proj.split(' ').slice(0,3).map(w=>w[0].toUpperCase()).join('');
+        if(abbr.length<2) abbr = proj.substring(0,3).toUpperCase();
+        const rand = Math.floor(Math.random()*1000).toString().padStart(3,'0');
+        currentFormId = `${abbr}-${ds}-${rand}`;
+        document.getElementById('formIdDisplay').textContent = currentFormId;
+        showNotification('success','ID Generated',`Travel Request ID: ${currentFormId}`);
+    }
+    
+    function copyFormId() { if(!currentFormId){ showNotification('warning','No ID','Generate or save first'); return; } navigator.clipboard.writeText(currentFormId).then(()=>showNotification('success','Copied!','ID copied')); }
+    
+    function setTravelerMode(m) {
+        travelerMode = m;
+        document.getElementById('individualModeBtn').classList.toggle('active', m==='individual');
+        document.getElementById('groupModeBtn').classList.toggle('active', m==='group');
+        document.getElementById('individualTravelSection').style.display = m==='individual' ? 'block' : 'none';
+        document.getElementById('groupTravelSection').style.display = m==='group' ? 'block' : 'none';
+        calculateDuration();
+    }
+    
+    function addTraveler() {
+        const c = document.getElementById('travelerDatesContainer'), idx = travelerCounter++;
+        const row = document.createElement('div'); row.className='traveler-row'; row.setAttribute('data-index',idx);
+        row.innerHTML=`<div class="traveler-name"><input type="text" class="traveler-name-input" placeholder="Traveler ${idx+1} Name"></div>
+                       <div class="traveler-date"><input type="date" class="traveler-departure-date"></div>
+                       <div class="traveler-date"><input type="date" class="traveler-return-date"></div>
+                       <div class="traveler-duration" data-index="${idx}">0 days</div>
+                       <button type="button" class="remove-traveler-btn" onclick="removeTraveler(this)">✕</button>`;
+        c.appendChild(row);
+        const today=new Date().toISOString().split('T')[0], tomorrow=new Date(Date.now()+86400000).toISOString().split('T')[0];
+        row.querySelector('.traveler-departure-date').value=today; row.querySelector('.traveler-return-date').value=tomorrow;
+        updateTravelerDuration(idx);
+        if(c.querySelectorAll('.traveler-row').length>1) c.querySelectorAll('.traveler-row').forEach(r=>r.querySelector('.remove-traveler-btn').style.display='block');
+    }
+    
+    function removeTraveler(btn) { const row=btn.closest('.traveler-row'); row.remove(); if(document.getElementById('travelerDatesContainer').querySelectorAll('.traveler-row').length===1) document.querySelector('.remove-traveler-btn').style.display='none'; }
+    
+    function updateTravelerDuration(idx) { 
+        const row=document.querySelector(`.traveler-row[data-index="${idx}"]`); 
+        if(!row) return; 
+        const dep=row.querySelector('.traveler-departure-date').value, ret=row.querySelector('.traveler-return-date').value; 
+        if(dep&&ret){ 
+            const days=Math.ceil((new Date(ret)-new Date(dep))/86400000)+1; 
+            row.querySelector('.traveler-duration').textContent=days+' days'; 
+        } 
+    }
+    
+    function calculateDuration() {
+        if(travelerMode==='individual'){
+            const s=document.getElementById('individualStartDate').value, e=document.getElementById('individualEndDate').value;
+            if(s&&e){ const days=Math.ceil((new Date(e)-new Date(s))/86400000)+1; document.getElementById('durationDisplay').textContent=`Travel Duration: ${days} days`; }
+            else { document.getElementById('durationDisplay').textContent=`Travel Duration: 0 days`; }
+        } else {
+            let max=0;
+            document.querySelectorAll('.traveler-row').forEach(r=>{
+                const dep=r.querySelector('.traveler-departure-date').value, ret=r.querySelector('.traveler-return-date').value;
+                if(dep&&ret){ const days=Math.ceil((new Date(ret)-new Date(dep))/86400000)+1; max=Math.max(max,days); }
+            });
+            if(max>0){ document.getElementById('durationDisplay').textContent=`Max Duration: ${max} days`; }
+            else { document.getElementById('durationDisplay').textContent=`Max Duration: 0 days`; }
+        }
+    }
+    
+    function toggleCertification(value) {
+        document.getElementById('certificationDetails').style.display = value === 'yes' ? 'block' : 'none';
+    }
+    
+    async function saveForm() {
+        if(!document.getElementById('projectName').value || !document.getElementById('destination').value || !document.getElementById('purpose').value){ 
+            showNotification('error','Validation Error','Please fill all required fields'); 
+            return; 
+        }
+        if(!isEditMode && !currentFormId){ generateNewId(); if(!currentFormId) return; }
+        
+        let travelers = [];
+        if(travelerMode==='individual'){
+            // Individual travel: 1 traveler dengan tanggal tertentu
+            travelers.push({
+                name: currentUser?.name || document.getElementById('employeeName').value || 'Traveler',
+                departure: document.getElementById('individualStartDate').value,
+                return: document.getElementById('individualEndDate').value
+            });
+        } else {
+            // Group travel: multiple travelers dengan tanggal masing-masing
+            document.querySelectorAll('.traveler-row').forEach(r=>{
+                const nameInput = r.querySelector('.traveler-name-input');
+                const depInput = r.querySelector('.traveler-departure-date');
+                const retInput = r.querySelector('.traveler-return-date');
+                if(nameInput && depInput && retInput && depInput.value && retInput.value){
+                    travelers.push({
+                        name: nameInput.value || 'Unknown',
+                        departure: depInput.value,
+                        return: retInput.value
+                    });
+                }
+            });
+        }
+        
+        if(travelers.length === 0){
+            showNotification('error','Validation Error','Please add at least one traveler with valid dates');
+            return;
+        }
+        
+        const data = {
+            formId: currentFormId,
+            employeeName: currentUser?.name || document.getElementById('employeeName').value,
+            employeeEmail: currentUser?.email || '',
+            department: document.getElementById('department').value,
+            projectName: document.getElementById('projectName').value,
+            destination: document.getElementById('destination').value,
+            purpose: document.getElementById('purpose').value,
+            travelerMode: travelerMode,
+            travelers: travelers,
+            totalTravelers: travelers.length,
+            travelAllowance: parseRupiah(document.getElementById('travelAllowance')?.value)||0,
+            travelLaundry: parseRupiah(document.getElementById('travelLaundry')?.value)||0,
+            travelLocalTransport: parseRupiah(document.getElementById('travelLocalTransport')?.value)||0,
+            travelOtherExpenses: parseRupiah(document.getElementById('travelOtherExpenses')?.value)||0,
+            needCertification: document.getElementById('needCertification').value,
+            mcuRequirements: document.getElementById('mcuRequirements').value,
+            certificationType: document.getElementById('certificationType').value,
+            otherCertification: document.getElementById('otherCertification').value,
+            certificateData: document.getElementById('certificateData').value,
+            additionalNotes: document.getElementById('additionalNotes').value,
+            savedAt: new Date().toISOString(),
+            lastUpdated: new Date().toISOString()
+        };
+        
+        showLoading();
+        try {
+            const res = await apiService.saveTravelForm(data);
+            if(res && res.success){ 
+                showNotification('success', isEditMode ? 'Updated!' : 'Saved!', `Travel request ${currentFormId} ${isEditMode ? 'updated' : 'saved'}`);
+                localStorage.setItem(`travelForm_${currentFormId}`, JSON.stringify(data));
+                isEditMode = true;
+                document.getElementById('editModeIndicator').style.display = 'inline-block';
+                document.getElementById('deleteBtn').style.display = 'block';
+            } else {
+                throw new Error(res?.error || 'Save failed');
+            }
+        } catch(e){ 
+            localStorage.setItem(`travelForm_${currentFormId}`, JSON.stringify(data));
+            showNotification('warning', isEditMode ? 'Updated Locally' : 'Saved Locally', `Data saved locally`);
+            isEditMode = true;
+            document.getElementById('editModeIndicator').style.display = 'inline-block';
+            document.getElementById('deleteBtn').style.display = 'block';
+        }
+        hideLoading();
+    }
+    
+    async function loadExistingForm(id) {
+        showLoading();
+        try {
+            const res = await apiService.getTravelForm(id);
+            if(res && (res.record || res.formId)){ 
+                const data = res.record || res; 
+                fillFormData(data); 
+                showNotification('success','Loaded',`Travel request ${id} loaded`);
+                document.getElementById('deleteBtn').style.display = 'block';
+            } else { 
+                const local = localStorage.getItem(`travelForm_${id}`); 
+                if(local){ 
+                    fillFormData(JSON.parse(local)); 
+                    showNotification('info','Loaded from Local','Form loaded from local storage');
+                    document.getElementById('deleteBtn').style.display = 'block';
+                } else showNotification('error','Not Found',`Travel request ${id} not found`);
+            }
+        } catch(e){ showNotification('error','Error','Failed to load form'); }
+        finally { hideLoading(); }
+    }
+    
+    function fillFormData(d){
+        document.getElementById('projectName').value = d.projectName || '';
+        document.getElementById('destination').value = d.destination || '';
+        document.getElementById('purpose').value = d.purpose || '';
+        if(d.travelAllowance) document.getElementById('travelAllowance').value = formatRupiah(d.travelAllowance);
+        if(d.travelLaundry) document.getElementById('travelLaundry').value = formatRupiah(d.travelLaundry);
+        if(d.travelLocalTransport) document.getElementById('travelLocalTransport').value = formatRupiah(d.travelLocalTransport);
+        if(d.travelOtherExpenses) document.getElementById('travelOtherExpenses').value = formatRupiah(d.travelOtherExpenses);
+        
+        document.getElementById('needCertification').value = d.needCertification || '';
+        toggleCertification(d.needCertification);
+        document.getElementById('mcuRequirements').value = d.mcuRequirements || '';
+        document.getElementById('certificationType').value = d.certificationType || '';
+        document.getElementById('otherCertification').value = d.otherCertification || '';
+        if(d.certificateData) document.getElementById('certificateData').value = d.certificateData;
+        document.getElementById('additionalNotes').value = d.additionalNotes || '';
+        
+        if(d.travelerMode === 'group' && d.travelers && Array.isArray(d.travelers) && d.travelers.length > 1){
+            // Group travel mode (multiple travelers)
+            setTravelerMode('group');
+            const c = document.getElementById('travelerDatesContainer');
+            c.innerHTML = '';
+            d.travelers.forEach((t, idx) => {
+                const row = document.createElement('div');
+                row.className = 'traveler-row';
+                row.setAttribute('data-index', idx);
+                row.innerHTML = `<div class="traveler-name"><input type="text" class="traveler-name-input" value="${t.name || ''}"></div>
+                                 <div class="traveler-date"><input type="date" class="traveler-departure-date" value="${t.departure || ''}"></div>
+                                 <div class="traveler-date"><input type="date" class="traveler-return-date" value="${t.return || ''}"></div>
+                                 <div class="traveler-duration" data-index="${idx}">0 days</div>
+                                 <button type="button" class="remove-traveler-btn" onclick="removeTraveler(this)">✕</button>`;
+                c.appendChild(row);
+                updateTravelerDuration(idx);
+            });
+            if(c.children.length > 1) c.querySelectorAll('.remove-traveler-btn').forEach(b => b.style.display = 'block');
+        } else {
+            // Individual travel mode (single traveler)
+            setTravelerMode('individual');
+            if(d.travelers && d.travelers[0]){
+                document.getElementById('individualStartDate').value = d.travelers[0].departure || '';
+                document.getElementById('individualEndDate').value = d.travelers[0].return || '';
+            }
+        }
+        
+        currentFormId = d.formId;
+        document.getElementById('formIdDisplay').textContent = d.formId;
+        isEditMode = true;
+        document.getElementById('editModeIndicator').style.display = 'inline-block';
+        calculateDuration();
+    }
+    
+    async function deleteTravelForm() {
+        if(!currentFormId){ showNotification('error','Error','No travel request loaded'); return; }
+        if(!confirm(`Delete travel request ${currentFormId} permanently? This will also delete its budget if exists.`)) return;
+        showLoading();
+        try {
+            const res = await apiService.deleteTravelForm(currentFormId);
+            if(res && res.success){ showNotification('success','Deleted',`Travel request ${currentFormId} deleted`); resetForm(); }
+            else{ localStorage.removeItem(`travelForm_${currentFormId}`); localStorage.removeItem(`budget_${currentFormId}`); showNotification('warning','Deleted Locally','Removed from local storage'); resetForm(); }
+            document.getElementById('deleteBtn').style.display = 'none';
+        } catch(e){ showNotification('error','Error','Failed to delete'); }
+        finally { hideLoading(); }
+    }
+    
+    function resetForm(){
+        document.getElementById('projectName').value = '';
+        document.getElementById('destination').value = '';
+        document.getElementById('purpose').value = '';
+        document.getElementById('travelAllowance').value = '';
+        document.getElementById('travelLaundry').value = '';
+        document.getElementById('travelLocalTransport').value = '';
+        document.getElementById('travelOtherExpenses').value = '';
+        document.getElementById('needCertification').value = '';
+        toggleCertification('no');
+        document.getElementById('mcuRequirements').value = '';
+        document.getElementById('certificationType').value = '';
+        document.getElementById('otherCertification').value = '';
+        document.getElementById('certificateData').value = '';
+        document.getElementById('certFileName').textContent = 'No file chosen';
+        document.getElementById('additionalNotes').value = '';
+        currentFormId = '';
+        isEditMode = false;
+        document.getElementById('editModeIndicator').style.display = 'none';
+        document.getElementById('deleteBtn').style.display = 'none';
+        document.getElementById('formIdDisplay').textContent = 'Fill form and click "Save"';
+        setTravelerMode('individual');
+        const today = new Date(), tomorrow = new Date(today);
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        document.getElementById('individualStartDate').value = today.toISOString().split('T')[0];
+        document.getElementById('individualEndDate').value = tomorrow.toISOString().split('T')[0];
+    }
+    
+    function goToBudget(){ if(!currentFormId){ showNotification('warning','No ID','Please save form first'); return; } window.location.href = `/budgetform.html?formId=${currentFormId}`; }
+    
+    function showLoading(){ let l=document.getElementById('loadingOverlay'); if(!l){ l=document.createElement('div'); l.id='loadingOverlay'; l.style.cssText='position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(255,255,255,0.95);display:flex;justify-content:center;align-items:center;z-index:2000'; l.innerHTML='<div><div style="width:50px;height:50px;border:4px solid #f3f3f3;border-top:4px solid #3498db;border-radius:50%;animation:spin 1s linear infinite;margin-bottom:20px;"></div><div>Loading...</div></div>'; document.body.appendChild(l); const s=document.createElement('style'); s.textContent='@keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}'; document.head.appendChild(s); } else l.style.display='flex'; }
+    function hideLoading(){ const l=document.getElementById('loadingOverlay'); if(l) l.style.display='none'; }
+    
+    function showNotification(type,title,msg){ const c=document.getElementById('notificationContainer'); const id='n'+Date.now(); const n=document.createElement('div'); n.className=`notification ${type}`; n.id=id; n.innerHTML=`<div style="font-size:24px;">${type==='success'?'✅':type==='error'?'❌':'⚠️'}</div><div><strong>${title}</strong><div style="font-size:13px;">${msg}</div></div>`; c.appendChild(n); setTimeout(()=>n.classList.add('show'),10); setTimeout(()=>{ n.classList.remove('show'); setTimeout(()=>n.remove(),300); },3000); }
+</script>
+</body>
+</html>
