@@ -9,11 +9,11 @@
     <script src="api.js"></script>
     <style>
         body {
-            background: #f4f6f9;
-            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-        .navbar-brand {
-            font-weight: bold;
+        .navbar {
+            background: #2c3e50 !important;
         }
         .container {
             max-width: 800px;
@@ -22,14 +22,28 @@
         .card {
             border-radius: 15px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border: none;
+        }
+        .card-header {
+            background: linear-gradient(135deg, #2c3e50 0%, #1a2530 100%);
+            color: white;
+            border-radius: 15px 15px 0 0 !important;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #2c3e50 0%, #1a2530 100%);
+            border: none;
+        }
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #1a2530 0%, #0f1a22 100%);
         }
         .form-label {
             font-weight: 600;
+            color: #2c3e50;
         }
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-dark bg-dark">
+    <nav class="navbar navbar-dark">
         <div class="container-fluid">
             <a class="navbar-brand" href="dashboard.html">
                 <i class="bi bi-wallet2"></i> Travel Budget System
@@ -48,7 +62,7 @@
 
     <div class="container">
         <div class="card">
-            <div class="card-header bg-primary text-white">
+            <div class="card-header">
                 <h4 class="mb-0"><i class="bi bi-calculator"></i> Budget Form</h4>
             </div>
             <div class="card-body">
@@ -67,11 +81,11 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Estimated Budget (Rp)</label>
-                        <input type="number" class="form-control" id="estimatedBudget" required>
+                        <input type="text" class="form-control" id="estimatedBudget" readonly>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Actual Budget (Rp)</label>
-                        <input type="number" class="form-control" id="actualBudget">
+                        <input type="number" class="form-control" id="actualBudget" required>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Notes</label>
@@ -89,23 +103,16 @@
     </div>
 
     <script>
-        // CEK AKSES: Hanya ADMIN yang bisa akses halaman ini
         const user = apiService.getCurrentUser();
-        if (!user) {
-            window.location.href = 'index.html';
-        }
-        
+        if (!user) window.location.href = 'index.html';
         if (user.role !== 'admin' && user.role !== 'manager') {
-            alert('⚠️ Akses ditolak! Halaman ini hanya untuk Admin dan Manager.');
+            alert('Akses ditolak. Halaman ini hanya untuk Admin dan Manager.');
             window.location.href = 'dashboard.html';
         }
-        
         document.getElementById('userName').innerText = user.name || user.email;
         
-        // Ambil parameter formId dari URL
         const urlParams = new URLSearchParams(window.location.search);
         const formId = urlParams.get('id');
-        
         if (!formId) {
             alert('No travel request selected');
             window.location.href = 'dashboard.html';
@@ -117,7 +124,7 @@
                 document.getElementById('formId').value = travel.formId;
                 document.getElementById('employeeName').value = travel.employeeName;
                 document.getElementById('destination').value = travel.destination;
-                document.getElementById('estimatedBudget').value = travel.estimatedBudget || '';
+                document.getElementById('estimatedBudget').value = travel.estimatedBudget ? `Rp ${parseInt(travel.estimatedBudget).toLocaleString('id-ID')}` : '-';
                 
                 const budget = await apiService.getBudget(formId);
                 if (budget) {
