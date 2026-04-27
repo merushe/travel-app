@@ -105,10 +105,13 @@
     <script>
         const user = apiService.getCurrentUser();
         if (!user) window.location.href = 'index.html';
+        
+        // Cek role Admin atau Manager
         if (user.role !== 'admin' && user.role !== 'manager') {
             alert('Akses ditolak. Halaman ini hanya untuk Admin dan Manager.');
             window.location.href = 'dashboard.html';
         }
+        
         document.getElementById('userName').innerText = user.name || user.email;
         
         const urlParams = new URLSearchParams(window.location.search);
