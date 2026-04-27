@@ -184,19 +184,30 @@
             try {
                 const allTravels = await apiService.getAllTravelForms();
                 const isAdmin = (currentUser.role === 'admin' || currentUser.role === 'manager');
-                let displayTravels = isAdmin ? allTravels : allTravels.filter(t => t.employeeEmail === currentUser.email);
+                const isOwner = (travel) => travel.employeeEmail === currentUser.email;
                 
+                // Filter data yang akan ditampilkan
+                let displayTravels = allTravels;
+                if (!isAdmin) {
+                    // Non-admin: hanya lihat milik sendiri
+                    displayTravels = allTravels.filter(travel => isOwner(travel));
+                }
+                
+                // Update statistik
                 document.getElementById('totalTravels').innerText = displayTravels.length;
                 
                 if (isAdmin) {
+                    // Admin: lihat semua angka
                     let totalBudget = displayTravels.reduce((sum, t) => sum + (parseInt(t.estimatedBudget) || 0), 0);
                     document.getElementById('totalBudget').innerHTML = `Rp ${totalBudget.toLocaleString('id-ID')}`;
                     document.getElementById('totalBudgets').innerText = displayTravels.filter(t => t.budget).length || '0';
                 } else {
+                    // Non-admin: sembunyikan angka statistik
                     document.getElementById('totalBudgets').innerText = '***';
                     document.getElementById('totalBudget').innerHTML = '*******';
                 }
                 
+                // Render tabel
                 const tbody = document.getElementById('travelTableBody');
                 tbody.innerHTML = '';
                 
@@ -207,7 +218,8 @@
                     row.insertCell(2).innerHTML = travel.destination || '-';
                     
                     const budgetCell = row.insertCell(3);
-                    if (isAdmin && travel.estimatedBudget) {
+                    // Tampilkan angka jika: (Admin ATAU pemilik form) DAN ada angka
+                    if ((isAdmin || isOwner(travel)) && travel.estimatedBudget) {
                         budgetCell.innerHTML = `Rp ${parseInt(travel.estimatedBudget).toLocaleString('id-ID')}`;
                     } else {
                         budgetCell.innerHTML = '<span class="blur-text">*******</span>';
@@ -218,7 +230,7 @@
                     const actionCell = row.insertCell(5);
                     actionCell.className = 'action-btns';
                     let buttons = '';
-                    if (isAdmin || travel.employeeEmail === currentUser.email) {
+                    if (isAdmin || isOwner(travel)) {
                         buttons += `<i class="bi bi-pencil-square edit-btn" onclick="editTravel('${travel.formId}')" title="Edit"></i>`;
                         buttons += `<i class="bi bi-trash delete-btn" onclick="deleteTravel('${travel.formId}')" title="Delete"></i>`;
                     }
