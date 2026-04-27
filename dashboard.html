@@ -196,13 +196,13 @@
                 // Update statistik
                 document.getElementById('totalTravels').innerText = displayTravels.length;
                 
+                // Hanya Admin/Manager yang bisa lihat angka statistik
                 if (isAdmin) {
-                    // Admin: lihat semua angka
                     let totalBudget = displayTravels.reduce((sum, t) => sum + (parseInt(t.estimatedBudget) || 0), 0);
                     document.getElementById('totalBudget').innerHTML = `Rp ${totalBudget.toLocaleString('id-ID')}`;
                     document.getElementById('totalBudgets').innerText = displayTravels.filter(t => t.budget).length || '0';
                 } else {
-                    // Non-admin: sembunyikan angka statistik
+                    // Non-admin: sembunyikan statistik
                     document.getElementById('totalBudgets').innerText = '***';
                     document.getElementById('totalBudget').innerHTML = '*******';
                 }
@@ -218,7 +218,7 @@
                     row.insertCell(2).innerHTML = travel.destination || '-';
                     
                     const budgetCell = row.insertCell(3);
-                    // Tampilkan angka jika: (Admin ATAU pemilik form) DAN ada angka
+                    // 🔐 PERBAIKAN: Hanya Admin/Manager ATAU pemilik form yang bisa lihat angka
                     if ((isAdmin || isOwner(travel)) && travel.estimatedBudget) {
                         budgetCell.innerHTML = `Rp ${parseInt(travel.estimatedBudget).toLocaleString('id-ID')}`;
                     } else {
@@ -230,10 +230,12 @@
                     const actionCell = row.insertCell(5);
                     actionCell.className = 'action-btns';
                     let buttons = '';
+                    // Edit & Delete: hanya admin/manager atau pemilik
                     if (isAdmin || isOwner(travel)) {
                         buttons += `<i class="bi bi-pencil-square edit-btn" onclick="editTravel('${travel.formId}')" title="Edit"></i>`;
                         buttons += `<i class="bi bi-trash delete-btn" onclick="deleteTravel('${travel.formId}')" title="Delete"></i>`;
                     }
+                    // Budget: hanya admin/manager
                     if (isAdmin) {
                         buttons += `<i class="bi bi-calculator budget-btn" onclick="viewBudget('${travel.formId}')" title="Budget"></i>`;
                     }
