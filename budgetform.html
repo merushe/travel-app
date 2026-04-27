@@ -90,7 +90,7 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Notes</label>
-                        <textarea class="form-control" id="notes" rows="3"></textarea>
+                        <textarea class="form-control" id="notes" rows="3"><\/textarea>
                     </div>
                     <button type="submit" class="btn btn-primary">
                         <i class="bi bi-save"></i> Save Budget
@@ -107,7 +107,6 @@
         const user = apiService.getCurrentUser();
         if (!user) window.location.href = 'index.html';
         
-        // 🔐 Hanya Admin/Manager yang bisa akses halaman budget
         if (user.role !== 'admin' && user.role !== 'manager') {
             alert('Akses ditolak. Halaman ini hanya untuk Admin dan Manager.');
             window.location.href = 'dashboard.html';
@@ -161,6 +160,6 @@
         }
         
         loadBudget();
-    </script>
+    <\/script>
 </body>
 </html>

@@ -159,7 +159,7 @@
                         </tr>
                     </thead>
                     <tbody id="travelTableBody">
-                        <tr><td colspan="6" class="text-center">Loading...</td></tr>
+                        <tr><td colspan="6" class="text-center">Loading...<\/td></tr>
                     </tbody>
                 </table>
             </div>
@@ -186,28 +186,22 @@
                 const isAdmin = (currentUser.role === 'admin' || currentUser.role === 'manager');
                 const isOwner = (travel) => travel.employeeEmail === currentUser.email;
                 
-                // Filter data yang akan ditampilkan
                 let displayTravels = allTravels;
                 if (!isAdmin) {
-                    // Non-admin: hanya lihat milik sendiri
                     displayTravels = allTravels.filter(travel => isOwner(travel));
                 }
                 
-                // Update statistik
                 document.getElementById('totalTravels').innerText = displayTravels.length;
                 
-                // Hanya Admin/Manager yang bisa lihat angka statistik
                 if (isAdmin) {
                     let totalBudget = displayTravels.reduce((sum, t) => sum + (parseInt(t.estimatedBudget) || 0), 0);
                     document.getElementById('totalBudget').innerHTML = `Rp ${totalBudget.toLocaleString('id-ID')}`;
                     document.getElementById('totalBudgets').innerText = displayTravels.filter(t => t.budget).length || '0';
                 } else {
-                    // Non-admin: sembunyikan statistik
                     document.getElementById('totalBudgets').innerText = '***';
                     document.getElementById('totalBudget').innerHTML = '*******';
                 }
                 
-                // Render tabel
                 const tbody = document.getElementById('travelTableBody');
                 tbody.innerHTML = '';
                 
@@ -218,32 +212,29 @@
                     row.insertCell(2).innerHTML = travel.destination || '-';
                     
                     const budgetCell = row.insertCell(3);
-                    // 🔐 PERBAIKAN: Hanya Admin/Manager ATAU pemilik form yang bisa lihat angka
-                    if ((isAdmin || isOwner(travel)) && travel.estimatedBudget) {
+                    if (travel.estimatedBudget) {
                         budgetCell.innerHTML = `Rp ${parseInt(travel.estimatedBudget).toLocaleString('id-ID')}`;
                     } else {
-                        budgetCell.innerHTML = '<span class="blur-text">*******</span>';
+                        budgetCell.innerHTML = '<span class="blur-text">*******<\/span>';
                     }
                     
-                    row.insertCell(4).innerHTML = `<span class="badge bg-secondary">${travel.status || 'draft'}</span>`;
+                    row.insertCell(4).innerHTML = `<span class="badge bg-secondary">${travel.status || 'draft'}<\/span>`;
                     
                     const actionCell = row.insertCell(5);
                     actionCell.className = 'action-btns';
                     let buttons = '';
-                    // Edit & Delete: hanya admin/manager atau pemilik
                     if (isAdmin || isOwner(travel)) {
-                        buttons += `<i class="bi bi-pencil-square edit-btn" onclick="editTravel('${travel.formId}')" title="Edit"></i>`;
-                        buttons += `<i class="bi bi-trash delete-btn" onclick="deleteTravel('${travel.formId}')" title="Delete"></i>`;
+                        buttons += `<i class="bi bi-pencil-square edit-btn" onclick="editTravel('${travel.formId}')" title="Edit"><\/i>`;
+                        buttons += `<i class="bi bi-trash delete-btn" onclick="deleteTravel('${travel.formId}')" title="Delete"><\/i>`;
                     }
-                    // Budget: hanya admin/manager
                     if (isAdmin) {
-                        buttons += `<i class="bi bi-calculator budget-btn" onclick="viewBudget('${travel.formId}')" title="Budget"></i>`;
+                        buttons += `<i class="bi bi-calculator budget-btn" onclick="viewBudget('${travel.formId}')" title="Budget"><\/i>`;
                     }
                     actionCell.innerHTML = buttons || '-';
                 }
             } catch (err) {
                 console.error(err);
-                document.getElementById('travelTableBody').innerHTML = '<tr><td colspan="6" class="text-center text-danger">Error loading data</td></tr>';
+                document.getElementById('travelTableBody').innerHTML = '<tr><td colspan="6" class="text-center text-danger">Error loading data<\/td><\/tr>';
             }
         }
         
@@ -259,6 +250,6 @@
         function logout() { sessionStorage.clear(); window.location.href = 'index.html'; }
         
         init();
-    </script>
+    <\/script>
 </body>
 </html>
