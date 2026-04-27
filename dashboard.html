@@ -8,248 +8,117 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
     <script src="api.js"></script>
     <style>
-        body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        .navbar {
-            background: #2c3e50 !important;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        .navbar-brand {
-            font-weight: bold;
-            color: white !important;
-        }
-        .container {
-            max-width: 1400px;
-            margin-top: 20px;
-        }
-        .card {
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            border: none;
-        }
-        .card-header {
-            background: linear-gradient(135deg, #2c3e50 0%, #1a2530 100%);
-            color: white;
-            border-radius: 15px 15px 0 0 !important;
-            padding: 15px 20px;
-        }
-        .btn-primary {
-            background: linear-gradient(135deg, #2c3e50 0%, #1a2530 100%);
-            border: none;
-        }
-        .btn-primary:hover {
-            background: linear-gradient(135deg, #1a2530 0%, #0f1a22 100%);
-        }
-        .table-container {
-            background: white;
-            border-radius: 15px;
-            padding: 0;
-            overflow: hidden;
-        }
-        .table {
-            margin-bottom: 0;
-        }
-        .table thead {
-            background: #f8f9fa;
-        }
-        .action-btns i {
-            font-size: 18px;
-            margin: 0 5px;
-            cursor: pointer;
-        }
+        body { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); font-family: 'Segoe UI', sans-serif; }
+        .navbar { background: #2c3e50 !important; }
+        .navbar-brand { font-weight: bold; color: white !important; }
+        .container { max-width: 1400px; margin-top: 20px; }
+        .card { border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); border: none; }
+        .card-header { background: linear-gradient(135deg, #2c3e50 0%, #1a2530 100%); color: white; border-radius: 15px 15px 0 0 !important; padding: 15px 20px; }
+        .btn-primary { background: linear-gradient(135deg, #2c3e50 0%, #1a2530 100%); border: none; }
+        .btn-primary:hover { background: linear-gradient(135deg, #1a2530 0%, #0f1a22 100%); }
+        .table-container { background: white; border-radius: 15px; padding: 0; overflow: hidden; }
+        .table { margin-bottom: 0; }
+        .table thead { background: #f8f9fa; }
+        .action-btns i { font-size: 18px; margin: 0 5px; cursor: pointer; }
         .edit-btn { color: #ffc107; }
         .delete-btn { color: #dc3545; }
         .budget-btn { color: #28a745; }
-        .blur-text {
-            color: #999;
-            font-family: monospace;
-            letter-spacing: 2px;
-        }
-        .stats-card {
-            background: white;
-            border-radius: 15px;
-            padding: 20px;
-            text-align: center;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
-        }
-        .stats-card i {
-            font-size: 40px;
-            color: #2c3e50;
-            margin-bottom: 10px;
-        }
-        .stats-card h3 {
-            font-size: 28px;
-            font-weight: bold;
-            margin: 10px 0;
-            color: #2c3e50;
-        }
-        .stats-card p {
-            color: #666;
-            margin: 0;
-        }
+        .blur-text { color: #999; font-family: monospace; letter-spacing: 2px; }
+        .stats-card { background: white; border-radius: 15px; padding: 20px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        .stats-card i { font-size: 40px; color: #2c3e50; margin-bottom: 10px; }
+        .stats-card h3 { font-size: 28px; font-weight: bold; margin: 10px 0; color: #2c3e50; }
+        .stats-card p { color: #666; margin: 0; }
+        .nav-links { display: flex; gap: 10px; flex-wrap: wrap; }
+        .nav-link { color: white; text-decoration: none; padding: 5px 15px; border-radius: 5px; }
+        .nav-link:hover { background: #1a2530; }
     </style>
 </head>
 <body>
     <nav class="navbar navbar-dark">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#">
-                <i class="bi bi-wallet2"></i> Travel Budget System
-            </a>
-            <div class="d-flex">
-                <span class="text-white me-3">
-                    <i class="bi bi-person-circle"></i> 
-                    <span id="userName"></span>
-                    <span class="badge bg-info ms-2" id="userRole"></span>
-                </span>
-                <button class="btn btn-outline-light btn-sm" onclick="logout()">
-                    <i class="bi bi-box-arrow-right"></i> Logout
-                </button>
+            <a class="navbar-brand" href="#"><i class="bi bi-wallet2"></i> Travel Budget System</a>
+            <div class="d-flex align-items-center gap-3">
+                <div class="nav-links">
+                    <a href="dashboard.html" class="nav-link">Dashboard</a>
+                    <a href="travelform.html" class="nav-link">Travel Request</a>
+                    <a href="budgetform.html" class="nav-link">Budget Form</a>
+                    <a href="meeting-package.html" class="nav-link">Meeting Package</a>
+                </div>
+                <span class="text-white"><i class="bi bi-person-circle"></i> <span id="userName"></span> <span class="badge bg-info ms-2" id="userRole"></span></span>
+                <button class="btn btn-outline-light btn-sm" onclick="logout()"><i class="bi bi-box-arrow-right"></i> Logout</button>
             </div>
         </div>
     </nav>
-
     <div class="container">
         <div class="row mb-4">
-            <div class="col-md-4">
-                <div class="stats-card">
-                    <i class="bi bi-suitcase"></i>
-                    <h3 id="totalTravels">0</h3>
-                    <p>Total Travel Requests</p>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="stats-card">
-                    <i class="bi bi-calculator"></i>
-                    <h3 id="totalBudgets">0</h3>
-                    <p>Total Budgets</p>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="stats-card">
-                    <i class="bi bi-cash"></i>
-                    <h3 id="totalBudget">Rp 0</h3>
-                    <p>Total Budget Amount</p>
-                </div>
-            </div>
+            <div class="col-md-4"><div class="stats-card"><i class="bi bi-suitcase"></i><h3 id="totalTravels">0</h3><p>Total Travel Requests</p></div></div>
+            <div class="col-md-4"><div class="stats-card"><i class="bi bi-calculator"></i><h3 id="totalBudgets">0</h3><p>Total Budgets</p></div></div>
+            <div class="col-md-4"><div class="stats-card"><i class="bi bi-cash"></i><h3 id="totalBudget">Rp 0</h3><p>Total Budget Amount</p></div></div>
         </div>
-
-        <div class="mb-3">
-            <a href="travelform.html" class="btn btn-primary">
-                <i class="bi bi-plus-circle"></i> New Travel Request
-            </a>
-        </div>
-
+        <div class="mb-3"><a href="travelform.html" class="btn btn-primary"><i class="bi bi-plus-circle"></i> New Travel Request</a></div>
         <div class="table-container card">
-            <div class="card-header">
-                <h5 class="mb-0"><i class="bi bi-table"></i> Travel Requests</h5>
-            </div>
+            <div class="card-header"><h5 class="mb-0"><i class="bi bi-table"></i> Travel Requests</h5></div>
             <div class="table-responsive">
                 <table class="table table-hover">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Employee</th>
-                            <th>Destination</th>
-                            <th>Budget</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="travelTableBody">
-                        <tr><td colspan="6" class="text-center">Loading...</td></tr>
-                    </tbody>
+                    <thead><tr><th>ID</th><th>Employee</th><th>Destination</th><th>Budget</th><th>Status</th><th>Actions</th></tr></thead>
+                    <tbody id="travelTableBody"><tr><td colspan="6" class="text-center">Loading...</td></tr></tbody>
                 </table>
             </div>
         </div>
     </div>
-
     <script>
         let currentUser = null;
-        
         async function init() {
             currentUser = apiService.getCurrentUser();
-            if (!currentUser) {
-                window.location.href = 'index.html';
-                return;
-            }
+            if (!currentUser) { window.location.href = 'index.html'; return; }
             document.getElementById('userName').innerText = currentUser.name || currentUser.email;
             document.getElementById('userRole').innerText = currentUser.role || 'user';
             await loadData();
         }
-        
         async function loadData() {
             try {
                 const allTravels = await apiService.getAllTravelForms();
                 const isAdmin = (currentUser.role === 'admin' || currentUser.role === 'manager');
                 const isOwner = (travel) => travel.employeeEmail === currentUser.email;
-                
-                // Filter data yang ditampilkan di tabel
-                let displayTravels = allTravels;
-                if (!isAdmin) {
-                    // Non-admin: hanya lihat travel milik sendiri
-                    displayTravels = allTravels.filter(travel => isOwner(travel));
-                }
-                
-                // Update statistik jumlah travel
+                let displayTravels = isAdmin ? allTravels : allTravels.filter(t => isOwner(t));
                 document.getElementById('totalTravels').innerText = displayTravels.length;
-                
-                // 🔐 STATISTIK ANGGARAN: Hanya Admin/Manager yang bisa lihat
                 if (isAdmin) {
-                    let totalBudget = displayTravels.reduce((sum, t) => sum + (parseInt(t.estimatedBudget) || 0), 0);
-                    document.getElementById('totalBudget').innerHTML = `Rp ${totalBudget.toLocaleString('id-ID')}`;
+                    let totalBudget = displayTravels.reduce((s,t) => s + (parseInt(t.estimatedBudget)||0), 0);
+                    document.getElementById('totalBudget').innerHTML = 'Rp ' + totalBudget.toLocaleString('id-ID');
                     document.getElementById('totalBudgets').innerText = displayTravels.filter(t => t.budget).length || '0';
                 } else {
-                    // User biasa: statistik anggaran disembunyikan
                     document.getElementById('totalBudgets').innerText = '***';
                     document.getElementById('totalBudget').innerHTML = '*******';
                 }
-                
-                // Render tabel
                 const tbody = document.getElementById('travelTableBody');
                 tbody.innerHTML = '';
-                
-                for (let travel of displayTravels) {
+                for (let t of displayTravels) {
                     const row = tbody.insertRow();
-                    row.insertCell(0).innerHTML = travel.formId || '-';
-                    row.insertCell(1).innerHTML = travel.employeeName || '-';
-                    row.insertCell(2).innerHTML = travel.destination || '-';
-                    
+                    row.insertCell(0).innerHTML = t.formId || '-';
+                    row.insertCell(1).innerHTML = t.employeeName || '-';
+                    row.insertCell(2).innerHTML = t.destination || '-';
                     const budgetCell = row.insertCell(3);
-                    // 🔐 BUDGET DI TABEL:
-                    // - Admin/Manager: lihat semua angka
-                    // - User: hanya lihat angka milik sendiri (karena tabel sudah difilter)
-                    if (travel.estimatedBudget) {
-                        budgetCell.innerHTML = `Rp ${parseInt(travel.estimatedBudget).toLocaleString('id-ID')}`;
+                    if ((isAdmin || isOwner(t)) && t.estimatedBudget) {
+                        budgetCell.innerHTML = 'Rp ' + parseInt(t.estimatedBudget).toLocaleString('id-ID');
                     } else {
                         budgetCell.innerHTML = '<span class="blur-text">*******</span>';
                     }
-                    
-                    row.insertCell(4).innerHTML = `<span class="badge bg-secondary">${travel.status || 'draft'}</span>`;
-                    
+                    row.insertCell(4).innerHTML = '<span class="badge bg-secondary">' + (t.status || 'draft') + '</span>';
                     const actionCell = row.insertCell(5);
                     actionCell.className = 'action-btns';
                     let buttons = '';
-                    // Edit & Delete: admin/manager ATAU pemilik
-                    if (isAdmin || isOwner(travel)) {
-                        buttons += `<i class="bi bi-pencil-square edit-btn" onclick="editTravel('${travel.formId}')" title="Edit"></i>`;
-                        buttons += `<i class="bi bi-trash delete-btn" onclick="deleteTravel('${travel.formId}')" title="Delete"></i>`;
+                    if (isAdmin || isOwner(t)) {
+                        buttons += '<i class="bi bi-pencil-square edit-btn" onclick="editTravel(\'' + t.formId + '\')" title="Edit"></i>';
+                        buttons += '<i class="bi bi-trash delete-btn" onclick="deleteTravel(\'' + t.formId + '\')" title="Delete"></i>';
                     }
-                    // Budget: hanya admin/manager
-                    if (isAdmin) {
-                        buttons += `<i class="bi bi-calculator budget-btn" onclick="viewBudget('${travel.formId}')" title="Budget"></i>`;
-                    }
+                    if (isAdmin) buttons += '<i class="bi bi-calculator budget-btn" onclick="viewBudget(\'' + t.formId + '\')" title="Budget"></i>';
                     actionCell.innerHTML = buttons || '-';
                 }
-            } catch (err) {
-                console.error(err);
+            } catch(err) {
                 document.getElementById('travelTableBody').innerHTML = '<tr><td colspan="6" class="text-center text-danger">Error loading data</td></tr>';
             }
         }
-        
-        function editTravel(id) { window.location.href = `travelform.html?id=${id}`; }
+        function editTravel(id) { window.location.href = 'travelform.html?id=' + id; }
         async function deleteTravel(id) {
             if (confirm('Hapus travel request ini?')) {
                 const result = await apiService.deleteTravelForm(id);
@@ -257,9 +126,8 @@
                 if (result.success) loadData();
             }
         }
-        function viewBudget(id) { window.location.href = `budgetform.html?id=${id}`; }
+        function viewBudget(id) { window.location.href = 'budgetform.html?id=' + id; }
         function logout() { sessionStorage.clear(); window.location.href = 'index.html'; }
-        
         init();
     </script>
 </body>
