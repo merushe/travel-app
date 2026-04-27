@@ -52,6 +52,7 @@
                 <span class="text-white me-3">
                     <i class="bi bi-person-circle"></i> 
                     <span id="userName"></span>
+                    <span class="badge bg-info ms-2" id="userRole"></span>
                 </span>
                 <button class="btn btn-outline-light btn-sm" onclick="logout()">
                     <i class="bi bi-box-arrow-right"></i> Logout
@@ -106,13 +107,14 @@
         const user = apiService.getCurrentUser();
         if (!user) window.location.href = 'index.html';
         
-        // Cek role Admin atau Manager
+        // 🔐 Hanya Admin/Manager yang bisa akses halaman budget
         if (user.role !== 'admin' && user.role !== 'manager') {
             alert('Akses ditolak. Halaman ini hanya untuk Admin dan Manager.');
             window.location.href = 'dashboard.html';
         }
         
         document.getElementById('userName').innerText = user.name || user.email;
+        document.getElementById('userRole').innerText = user.role || 'user';
         
         const urlParams = new URLSearchParams(window.location.search);
         const formId = urlParams.get('id');
